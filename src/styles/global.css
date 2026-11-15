@@ -399,3 +399,38 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
   .photo-cuboid__actions button { width: 30px; height: 30px; }
 }
 @media (prefers-reduced-motion: reduce) { .photo-cuboid__rotor.is-turning { animation: none; } }
+
+/* ── Smoothness & flow ─────────────────────────────────────── */
+:root { --ease-out: cubic-bezier(.22, 1, .36, 1); }
+html { scroll-padding-top: 110px; -webkit-tap-highlight-color: transparent; }
+body { transition: background-color .4s ease, color .4s ease; }
+.layout--story { overscroll-behavior: none; }
+.shutter-sequence { overscroll-behavior: contain; }
+
+/* Each route arrives with a soft fade instead of a hard cut. */
+.page { display: flow-root; }
+.layout--story .page { flex: 1; display: flex; min-width: 0; min-height: 0; }
+
+/* Header tucks away while reading down a page and returns on scroll up. */
+.header { transition: transform .45s var(--ease-out), background-color .4s ease; }
+.header--hidden { transform: translateY(-100%); }
+
+/* Photos reveal as they enter the viewport, then fade in once decoded. */
+.photo-card img { opacity: 0; }
+.photo-card.is-loaded img { opacity: 1; transition: opacity .6s ease, transform .6s ease, filter .6s ease; }
+.photo-card { transform: translateY(18px); opacity: 0; transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.photo-card.is-visible { transform: none; opacity: 1; }
+.lightbox__img { animation: fade .35s ease; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  .page { animation: page-in .55s var(--ease-out) backwards; }
+}
+@keyframes page-in { from { opacity: 0; transform: translateY(10px); } }
+.layout--story .page { animation-name: fade; }
+
+@media (prefers-reduced-motion: reduce) {
+  .header, .photo-card, .photo-card img, .photo-card.is-loaded img, body { transition: none; }
+  .photo-card, .photo-card img { opacity: 1; transform: none; }
+  .lightbox__img { animation: none; }
+}

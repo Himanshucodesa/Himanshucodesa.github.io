@@ -10,12 +10,33 @@ import PhotoGrid from './PhotoGrid.jsx'
 import PhotoCuboid from './PhotoCuboid.jsx'
 import { shutterFrame } from '../utils/shutterTimeline.js'
 import { useShutterSound } from '../hooks/useShutterSound.js'
+import { resolveSrc } from '../content/resolveSrc.js'
 import SoundIcon from '@icons/SoundIcon.jsx'
 
 const scenes = photoChapters.flatMap((chapter) => [
   { chapter, kind: 'cover' },
   { chapter, kind: 'grid' },
 ])
+
+// Glide time constant (ms): how quickly the shutter catches up with input.
+const GLIDE_MS = 110
+// After input stops, a half-closed iris settles on the nearest scene.
+const SETTLE_DELAY_MS = 180
+// How far into a transition counts as intent to move on.
+const COMMIT = 0.15
+const lastScene = scenes.length - 1
+const clamp = (value) => Math.max(0, Math.min(lastScene, value))
+
+function preloadScene(scene) {
+  if (!scene) return
+  const sources = scene.kind === 'cover' ? [scene.chapter.cover?.src] : scene.chapter.photos.map((photo) => photo.src)
+  for (const src of sources) {
+    if (!src) continue
+    const image = new Image()
+    image.decoding = 'async'
+    image.src = resolveSrc(src)
+  }
+}
 
 export default function ShutterSequence({ onStepChange }) {
   const { t } = usePreferences()
@@ -25,19 +46,24 @@ export default function ShutterSequence({ onStepChange }) {
   const stageRef = useRef(null)
   const apertureRef = useRef(null)
   const frameRef = useRef(0)
-  const positionRef = useRef(0)
+  const lastFrame = useRef(0)
+  const targetRef = useRef(0)
+  const direction = useRef(1)
+  const settleTimer = useRef(0)
+  const lightboxRef = useRef(false)
+  const reducedMotion = useRef(false)
   const pendingPosition = useRef(0)
   const touch = useRef(null)
   const current = shutterFrame(position, scenes.length)
   const { index } = current
   const busy = current.open < 0.98
   const scene = scenes[index]
+  lightboxRef.current = lightboxOpen
 
-  // Scroll distance is the playhead. There is no timer or automatic completion.
-  const scrubTo = useCallback((value) => {
-    if (lightboxOpen) return
+  // Renders one shutter position. Input never calls this directly; it sets a
+  // target and the glide loop below eases toward it, frame by frame.
+  const renderAt = useCallback((value) => {
     const next = shutterFrame(value, scenes.length)
-    positionRef.current = next.progress
     const previous = shutterFrame(pendingPosition.current, scenes.length)
     pendingPosition.current = next.progress
     // Large slider/keyboard jumps also replace the scene behind a closed iris.
@@ -47,26 +73,99 @@ export default function ShutterSequence({ onStepChange }) {
     }
     flushSync(() => setPosition(next.progress))
     apertureRef.current?.setOpen(next.open)
-  }, [lightboxOpen, play])
+  }, [play])
+
+  const stopGlide = useCallback(() => {
+    cancelAnimationFrame(frameRef.current)
+    frameRef.current = 0
+    lastFrame.current = 0
+  }, [])
+
+  const glide = useCallback((now) => {
+    const from = pendingPosition.current
+    const to = targetRef.current
+    if (lightboxRef.current) {
+      targetRef.current = from
+      stopGlide()
+      return
+    }
+    const elapsed = lastFrame.current ? Math.min(64, now - lastFrame.current) : 16
+    lastFrame.current = now
+    const diff = to - from
+    if (reducedMotion.current || Math.abs(diff) < 0.0008) {
+      stopGlide()
+      renderAt(to)
+      return
+    }
+    renderAt(from + diff * (1 - Math.exp(-elapsed / GLIDE_MS)))
+    frameRef.current = requestAnimationFrame(glide)
+  }, [renderAt, stopGlide])
+
+  const glideTo = useCallback((value) => {
+    if (lightboxRef.current) return
+    targetRef.current = clamp(value)
+    if (!frameRef.current) frameRef.current = requestAnimationFrame(glide)
+  }, [glide])
+
+  // Never leave the iris half-closed: once input pauses, finish the movement
+  // the visitor started, or fall back to the scene they were on.
+  const scheduleSettle = useCallback(() => {
+    clearTimeout(settleTimer.current)
+    settleTimer.current = setTimeout(() => {
+      const target = targetRef.current
+      if (shutterFrame(target, scenes.length).open >= 1) return
+      const base = Math.floor(target)
+      const fraction = target - base
+      const forward = direction.current > 0 ? fraction > COMMIT : fraction > 1 - COMMIT
+      glideTo(forward ? base + 1 : base)
+    }, SETTLE_DELAY_MS)
+  }, [glideTo])
 
   const scrubBy = useCallback((delta) => {
-    positionRef.current = shutterFrame(positionRef.current + delta, scenes.length).progress
-    if (frameRef.current) return
-    frameRef.current = requestAnimationFrame(() => {
-      frameRef.current = 0
-      scrubTo(positionRef.current)
-    })
-  }, [scrubTo])
+    if (!delta) return
+    direction.current = Math.sign(delta)
+    glideTo(targetRef.current + delta)
+    scheduleSettle()
+  }, [glideTo, scheduleSettle])
+
+  // Buttons and keys move exactly one scene, with the full shutter animation.
+  const stepScene = useCallback((step) => {
+    clearTimeout(settleTimer.current)
+    direction.current = step
+    const target = targetRef.current
+    glideTo(step > 0 ? Math.floor(target + 0.001) + 1 : Math.ceil(target - 0.001) - 1)
+  }, [glideTo])
+
+  // The slider is direct manipulation: follow the thumb without easing.
+  const scrubTo = useCallback((value) => {
+    if (lightboxRef.current) return
+    stopGlide()
+    direction.current = Math.sign(value - targetRef.current) || direction.current
+    targetRef.current = clamp(value)
+    renderAt(targetRef.current)
+  }, [renderAt, stopGlide])
 
   useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => { reducedMotion.current = media.matches }
+    update()
+    media.addEventListener('change', update)
     const resize = () => apertureRef.current?.setOpen(shutterFrame(pendingPosition.current, scenes.length).open)
     resize()
     window.addEventListener('resize', resize)
     return () => {
-      cancelAnimationFrame(frameRef.current)
+      stopGlide()
+      clearTimeout(settleTimer.current)
+      media.removeEventListener('change', update)
       window.removeEventListener('resize', resize)
     }
-  }, [])
+  }, [stopGlide])
+
+  // Warm the neighbouring scenes so a photo is ready before the iris reopens.
+  useEffect(() => {
+    preloadScene(scenes[index + 1])
+    preloadScene(scenes[index - 1])
+  }, [index])
 
   useEffect(() => { onStepChange?.(position > 0.02 ? index + 1 : 0) }, [index, position, onStepChange])
 
@@ -91,8 +190,10 @@ export default function ShutterSequence({ onStepChange }) {
       onPointerDownCapture={prime} onKeyDownCapture={prime} onTouchStartCapture={prime}
       onKeyDown={(event) => {
         if (lightboxOpen || event.target !== event.currentTarget) return
-        if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(event.key)) { event.preventDefault(); scrubBy(0.1) }
-        if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key)) { event.preventDefault(); scrubBy(-0.1) }
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); stepScene(event.shiftKey ? -1 : 1) }
+        if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key)) { event.preventDefault(); stepScene(-1) }
+        if (event.key === 'Home') { event.preventDefault(); glideTo(0) }
+        if (event.key === 'End') { event.preventDefault(); glideTo(lastScene) }
       }}
       onTouchStart={(event) => {
         if (lightboxOpen || event.touches.length !== 1 || event.target.closest('a, select, .shutter-sequence__controls')) return
@@ -111,6 +212,7 @@ export default function ShutterSequence({ onStepChange }) {
       onTouchEnd={(event) => {
         if (touch.current?.moved) event.preventDefault()
         touch.current = null
+        scheduleSettle()
       }} onTouchCancel={() => { touch.current = null }}>
       <h1 className="sr-only">{site.brand}</h1>
       <div className="shutter-sequence__scene" inert={busy}>
@@ -138,14 +240,17 @@ export default function ShutterSequence({ onStepChange }) {
       <div className="shutter-sequence__controls">
         <input className="shutter-sequence__scrubber" type="range" min="0" max={scenes.length - 1} step="0.001"
           value={position} onChange={(event) => scrubTo(Number(event.target.value))} disabled={lightboxOpen}
+          onPointerUp={scheduleSettle} onTouchEnd={scheduleSettle}
           onKeyDown={(event) => {
-            const steps = { ArrowRight: 0.1, ArrowUp: 0.1, ArrowLeft: -0.1, ArrowDown: -0.1, PageUp: 0.25, PageDown: -0.25 }
-            if (steps[event.key]) { event.preventDefault(); scrubBy(steps[event.key]) }
+            const steps = { ArrowRight: 1, ArrowUp: 1, PageUp: 1, ArrowLeft: -1, ArrowDown: -1, PageDown: -1 }
+            if (steps[event.key]) { event.preventDefault(); stepScene(steps[event.key]) }
+            if (event.key === 'Home') { event.preventDefault(); glideTo(0) }
+            if (event.key === 'End') { event.preventDefault(); glideTo(lastScene) }
           }}
           aria-label={t('Shutter control')}
           aria-valuetext={`${t(scene.chapter.category)} · ${t(scene.kind === 'cover' ? 'Featured' : 'Gallery')} · ${Math.round(current.open * 100)}%`}
         />
-        <button type="button" onClick={() => scrubBy(-0.1)} disabled={position <= 0 || lightboxOpen} aria-label={t('Previous')}>←</button>
+        <button type="button" onClick={() => stepScene(-1)} disabled={position <= 0 || lightboxOpen} aria-label={t('Previous')}>←</button>
         <span className="shutter-sequence__status" role="status" aria-live="polite" aria-atomic="true">
           {chapterNumber} / {String(photoChapters.length).padStart(2, '0')} · {t(scene.chapter.category)} · {t(scene.kind === 'cover' ? 'Featured' : 'Gallery')}
         </span>
@@ -154,8 +259,8 @@ export default function ShutterSequence({ onStepChange }) {
           title={t(soundEnabled ? 'Mute shutter sound' : 'Enable shutter sound')}>
           <SoundIcon muted={!soundEnabled} />
         </button>
-        {position === scenes.length - 1 ? <Link to="/gallery" className="shutter-sequence__all">{t('Gallery')} ↗</Link> :
-          <button type="button" onClick={() => scrubBy(0.1)} disabled={position >= scenes.length - 1 || lightboxOpen} aria-label={t('Next')}>→</button>}
+        {position === lastScene ? <Link to="/gallery" className="shutter-sequence__all">{t('Gallery')} ↗</Link> :
+          <button type="button" onClick={() => stepScene(1)} disabled={position >= lastScene || lightboxOpen} aria-label={t('Next')}>→</button>}
       </div>
     </section>
   )

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { site } from '../content/site.js'
 import Logo from './Logo.jsx'
+import { useScrollLock } from '../hooks/useScrollLock.js'
 import SunIcon from '@icons/SunIcon.jsx'
 import MoonIcon from '@icons/MoonIcon.jsx'
 
@@ -12,19 +13,36 @@ export default function Header({ storyHasAdvanced = false }) {
   const { t, theme, setTheme, language, setLanguage } = usePreferences()
   const [open, setOpen] = useState(false)
   const [compactBrand, setCompactBrand] = useState(false)
+  const [hidden, setHidden] = useState(false)
+
+  useScrollLock(open)
 
   useEffect(() => {
-    const updateBrand = () => {
+    let frame = 0
+    let lastY = window.scrollY
+    const update = () => {
+      frame = 0
+      const y = Math.max(0, window.scrollY)
       // A small buffer avoids flicker when scrolling around the threshold.
-      setCompactBrand((compact) => window.scrollY > (compact ? 40 : 64))
+      setCompactBrand((compact) => y > (compact ? 40 : 64))
+      // Tuck the header away while reading down; bring it back on any scroll up.
+      const delta = y - lastY
+      if (Math.abs(delta) > 6) {
+        setHidden(delta > 0 && y > 160)
+        lastY = y
+      }
     }
-    updateBrand()
-    window.addEventListener('scroll', updateBrand, { passive: true })
-    return () => window.removeEventListener('scroll', updateBrand)
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+    }
   }, [])
 
   return (
-    <header className="header">
+    <header className={`header ${hidden && !open ? 'header--hidden' : ''}`} onFocusCapture={() => setHidden(false)}>
       <Link to="/" className="brand" aria-label={`${site.brand} ${t('home')}`} onClick={() => setOpen(false)}>
         <Logo compact={compactBrand || storyHasAdvanced} />
       </Link>

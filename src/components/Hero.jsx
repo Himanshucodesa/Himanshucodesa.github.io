@@ -6,7 +6,7 @@ export default function Hero({ image, title, subtitle, headingLevel = 'h1', lazy
   const Heading = headingLevel
   return (
     <section className="hero">
-      <img className="hero__img" src={resolveSrc(image.src)} alt={t(image.alt ?? image.title)} loading={lazy ? 'lazy' : 'eager'} />
+      <img className="hero__img" src={resolveSrc(image.src)} alt={t(image.alt ?? image.title)} loading={lazy ? 'lazy' : 'eager'} decoding="async" fetchPriority={lazy ? 'auto' : 'high'} />
       <div className="hero__overlay" />
       <div className="hero__text">
         <Heading>{title}</Heading>
