@@ -8,6 +8,8 @@ import Aperture from './Aperture.jsx'
 import Hero from './Hero.jsx'
 import PhotoGrid from './PhotoGrid.jsx'
 import { shutterFrame } from '../utils/shutterTimeline.js'
+import { useShutterSound } from '../hooks/useShutterSound.js'
+import SoundIcon from '@icons/SoundIcon.jsx'
 
 const scenes = photoChapters.flatMap((chapter) => [
   { chapter, kind: 'cover' },
@@ -16,6 +18,7 @@ const scenes = photoChapters.flatMap((chapter) => [
 
 export default function ShutterSequence({ onStepChange }) {
   const { t } = usePreferences()
+  const { enabled: soundEnabled, supported: soundSupported, prime, play, toggle: toggleSound } = useShutterSound()
   const [position, setPosition] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const stageRef = useRef(null)
@@ -37,10 +40,13 @@ export default function ShutterSequence({ onStepChange }) {
     const previous = shutterFrame(pendingPosition.current, scenes.length)
     pendingPosition.current = next.progress
     // Large slider/keyboard jumps also replace the scene behind a closed iris.
-    if (previous.index !== next.index) apertureRef.current?.setOpen(0)
+    if (previous.index !== next.index) {
+      apertureRef.current?.setOpen(0)
+      play()
+    }
     flushSync(() => setPosition(next.progress))
     apertureRef.current?.setOpen(next.open)
-  }, [lightboxOpen])
+  }, [lightboxOpen, play])
 
   const scrubBy = useCallback((delta) => {
     positionRef.current = shutterFrame(positionRef.current + delta, scenes.length).progress
@@ -81,6 +87,7 @@ export default function ShutterSequence({ onStepChange }) {
   const chapterNumber = String(Math.floor(index / 2) + 1).padStart(2, '0')
   return (
     <section className="shutter-sequence" ref={stageRef} tabIndex={0} aria-label={t('Selected work')}
+      onPointerDownCapture={prime} onKeyDownCapture={prime} onTouchStartCapture={prime}
       onKeyDown={(event) => {
         if (lightboxOpen || event.target !== event.currentTarget) return
         if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(event.key)) { event.preventDefault(); scrubBy(0.1) }
@@ -140,6 +147,11 @@ export default function ShutterSequence({ onStepChange }) {
         <span className="shutter-sequence__status" role="status" aria-live="polite" aria-atomic="true">
           {chapterNumber} / {String(photoChapters.length).padStart(2, '0')} · {t(scene.chapter.category)} · {t(scene.kind === 'cover' ? 'Featured' : 'Gallery')}
         </span>
+        <button type="button" className="shutter-sequence__sound" onClick={toggleSound}
+          disabled={!soundSupported} aria-pressed={soundEnabled} aria-label={t('Shutter sound')}
+          title={t(soundEnabled ? 'Mute shutter sound' : 'Enable shutter sound')}>
+          <SoundIcon muted={!soundEnabled} />
+        </button>
         {position === scenes.length - 1 ? <Link to="/gallery" className="shutter-sequence__all">{t('Gallery')} ↗</Link> :
           <button type="button" onClick={() => scrubBy(0.1)} disabled={position >= scenes.length - 1 || lightboxOpen} aria-label={t('Next')}>→</button>}
       </div>

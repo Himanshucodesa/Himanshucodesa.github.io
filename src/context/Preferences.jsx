@@ -3,6 +3,9 @@ import { createContext, useContext, useEffect, useState } from 'react'
 export const languages = { en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français' }
 const translations = {
   nl: {
+    "Shutter sound": "Sluitergeluid",
+    "Enable shutter sound": "Sluitergeluid inschakelen",
+    "Mute shutter sound": "Sluitergeluid dempen",
     'Shutter control': 'Sluiterbediening',
     "Life between the lines.": "Het leven tussen de lijnen.",
     "Room to breathe.": "Ruimte om te ademen.",
@@ -30,6 +33,9 @@ const translations = {
     'Behind the lens': 'Achter de lens', 'Morning ridge': 'Bergrug in de ochtend', Crossing: 'Oversteek', 'Quiet hour': 'Stil uur', Harbour: 'Haven', 'Salt flats': 'Zoutvlaktes', 'Night market': 'Nachtmarkt', 'Window light': 'Raamlicht', 'Old town': 'Oude stad', 'Fog line': 'Mistlijn', Rain: 'Regen', Profile: 'Profiel', 'Coastal road': 'Kustweg',
   },
   de: {
+    "Shutter sound": "Verschlussgeräusch",
+    "Enable shutter sound": "Verschlussgeräusch einschalten",
+    "Mute shutter sound": "Verschlussgeräusch stummschalten",
     'Shutter control': 'Verschlusssteuerung',
     "Life between the lines.": "Das Leben zwischen den Zeilen.",
     "Room to breathe.": "Raum zum Durchatmen.",
@@ -57,6 +63,9 @@ const translations = {
     'Behind the lens': 'Hinter der Linse', 'Morning ridge': 'Bergkamm am Morgen', Crossing: 'Überquerung', 'Quiet hour': 'Stille Stunde', Harbour: 'Hafen', 'Salt flats': 'Salzebenen', 'Night market': 'Nachtmarkt', 'Window light': 'Fensterlicht', 'Old town': 'Altstadt', 'Fog line': 'Nebelgrenze', Rain: 'Regen', Profile: 'Profil', 'Coastal road': 'Küstenstraße',
   },
   fr: {
+    "Shutter sound": "Son de l’obturateur",
+    "Enable shutter sound": "Activer le son de l’obturateur",
+    "Mute shutter sound": "Couper le son de l’obturateur",
     'Shutter control': 'Commande de l’obturateur',
     "Life between the lines.": "La vie entre les lignes.",
     "Room to breathe.": "De l’espace pour respirer.",
