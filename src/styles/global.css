@@ -163,3 +163,32 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 }
 .footer__links { display: flex; gap: 24px; }
 .footer__links a:hover { color: var(--text); }
+
+/* Shutter hero (camera-iris scroll effect) */
+:root { --blade: #0e0e0e; --blade-light: #262420; --blade-edge: #3a362f; }
+.shutter { position: relative; height: 260vh; }
+.shutter__stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--bg); }
+.shutter__scene { height: 100%; transform: scale(var(--zoom, 1)); transform-origin: center; will-change: transform; }
+.shutter__scene .hero__text { opacity: var(--text-fade, 1); }
+.aperture { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.aperture__blade { fill: url(#blade-shade); stroke: var(--blade-edge); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.shutter__readout {
+  position: absolute; right: var(--gutter); bottom: 32px; z-index: 2;
+  font-family: var(--font-display); font-size: 22px; color: var(--accent); letter-spacing: .05em;
+  font-variant-numeric: tabular-nums;
+}
+.shutter__hint {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 2;
+  font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+  opacity: var(--text-fade, 1);
+}
+.shutter__hint::after {
+  content: ''; display: block; width: 1px; height: 28px; margin: 10px auto 0;
+  background: linear-gradient(var(--muted), transparent); animation: hint 1.8s ease-in-out infinite;
+}
+@keyframes hint { 0%, 100% { transform: scaleY(.4); transform-origin: top; } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .shutter { height: auto; }
+  .shutter__stage { position: relative; }
+  .aperture, .shutter__readout, .shutter__hint { display: none; }
+}
