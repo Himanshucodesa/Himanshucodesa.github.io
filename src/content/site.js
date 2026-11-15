@@ -28,6 +28,6 @@ export const site = {
       'Add a second paragraph about your approach, gear, clients, or anything you want visitors to know.',
     ],
     // Path inside /public, or a full URL
-    portrait: 'photos/placeholder-portrait.svg',
+    portrait: 'photos/portrait-with-camera.jpg',
   },
 }
