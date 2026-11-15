@@ -2,9 +2,15 @@
 // Site-wide settings. Edit this file to change text, links, and
 // navigation — no component code needs to change.
 // ─────────────────────────────────────────────────────────────
+const brandWords = ['Frame', 'the', 'Potraits']
+const brand = brandWords.join(' ')
+
 export const site = {
-  name: 'Your Name',
-  brand: 'FRAME',
+  name: brand,
+  brand,
+  brandWords,
+  url: 'https://www.framethepotraits.com/',
+  description: `${brand} — Light, place, and the moments in between. A photography portfolio.`,
   tagline: 'Light, place, and the moments in between.',
   location: 'Based in Mumbai · Available worldwide',
   email: 'hello@example.com',

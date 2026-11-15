@@ -1,7 +1,9 @@
+import { usePreferences } from '../context/Preferences.jsx'
 import { useEffect } from 'react'
 import { resolveSrc } from '../content/resolveSrc.js'
 
 export default function Lightbox({ photos, index, onChange, onClose }) {
+  const { t } = usePreferences()
   const photo = photos[index]
   const prev = () => onChange((index - 1 + photos.length) % photos.length)
   const next = () => onChange((index + 1) % photos.length)
@@ -22,17 +24,17 @@ export default function Lightbox({ photos, index, onChange, onClose }) {
 
   return (
     <div className="lightbox" role="dialog" aria-modal="true" onClick={onClose}>
-      <button className="lightbox__close" aria-label="Close" onClick={onClose}>×</button>
-      <button className="lightbox__nav lightbox__nav--prev" aria-label="Previous"
+      <button className="lightbox__close" aria-label={t('Close')} onClick={onClose}>×</button>
+      <button className="lightbox__nav lightbox__nav--prev" aria-label={t('Previous')}
         onClick={(e) => { e.stopPropagation(); prev() }}>‹</button>
       <figure onClick={(e) => e.stopPropagation()}>
-        <img src={resolveSrc(photo.src)} alt={photo.title} />
+        <img src={resolveSrc(photo.src)} alt={t(photo.title)} />
         <figcaption>
-          {photo.title} <span>· {photo.category}</span>
+          {t(photo.title)} <span>· {t(photo.category)}</span>
           <span className="lightbox__count">{index + 1} / {photos.length}</span>
         </figcaption>
       </figure>
-      <button className="lightbox__nav lightbox__nav--next" aria-label="Next"
+      <button className="lightbox__nav lightbox__nav--next" aria-label={t('Next')}
         onClick={(e) => { e.stopPropagation(); next() }}>›</button>
     </div>
   )

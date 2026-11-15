@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@icons/*": ["src/assets/icons/*"]
+    }
+  },
+  "include": ["src", "vite.config.js"]
+}

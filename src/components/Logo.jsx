@@ -7,7 +7,10 @@ export default function Logo({ className = '' }) {
   return (
     <span className={`logo ${className}`}>
       <LogoMark className="logo__mark" />
-      <span className="logo__word">{site.brand}</span>
+      <span className="logo__word" aria-label={site.brand}>
+        <span className="logo__primary" aria-hidden="true">{site.brandWords[0]}</span>
+        <span className="logo__secondary" aria-hidden="true"><i>{site.brandWords[1]}</i> {site.brandWords[2]}</span>
+      </span>
     </span>
   )
 }

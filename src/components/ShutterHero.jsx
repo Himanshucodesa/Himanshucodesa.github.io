@@ -1,3 +1,4 @@
+import { usePreferences } from '../context/Preferences.jsx'
 import { useCallback, useEffect, useRef } from 'react'
 import Hero from './Hero.jsx'
 import Aperture from './Aperture.jsx'
@@ -12,6 +13,7 @@ const INTRO_MS = 1400
 const ease = (t) => 1 - Math.pow(1 - t, 3)
 
 export default function ShutterHero(props) {
+  const { t } = usePreferences()
   const sectionRef = useRef(null)
   const stageRef = useRef(null)
   const readoutRef = useRef(null)
@@ -69,7 +71,7 @@ export default function ShutterHero(props) {
         </div>
         <Aperture ref={apertureRef} />
         <span className="shutter__readout" ref={readoutRef} aria-hidden="true">ƒ/22</span>
-        <span className="shutter__hint" aria-hidden="true">Scroll</span>
+        <span className="shutter__hint" aria-hidden="true">{t('Scroll')}</span>
       </div>
     </section>
   )
