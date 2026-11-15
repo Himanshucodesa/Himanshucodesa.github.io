@@ -1,4 +1,5 @@
 import { usePreferences } from '../context/Preferences.jsx'
+import { site } from '../content/site.js'
 import { useState } from 'react'
 import SectionHeading from '../components/SectionHeading.jsx'
 import CategoryFilter from '../components/CategoryFilter.jsx'
@@ -12,7 +13,9 @@ export default function Gallery() {
 
   return (
     <section className="container section page-top">
-      <SectionHeading eyebrow={t('Archive')} title={t('Gallery')} />
+      <SectionHeading eyebrow={t('Gallery')} title={t(site.gallery.heading)}>
+        {t(site.gallery.introduction)}
+      </SectionHeading>
       <CategoryFilter categories={categories} active={active} onChange={setActive} />
       {/* key resets the lightbox when the filter changes */}
       <PhotoGrid key={active} photos={shown} />

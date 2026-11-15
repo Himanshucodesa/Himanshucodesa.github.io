@@ -18,10 +18,12 @@ export default function Home() {
         </span>
       } subtitle={t(site.tagline)} />
       <section className="container section">
-        <SectionHeading eyebrow={t('Selected work')} title={t('Featured')} />
+        <SectionHeading eyebrow={t('Selected work')} title={t(site.home.heading)}>
+          {t(site.home.introduction)}
+        </SectionHeading>
         <PhotoGrid photos={featured} />
         <div className="center">
-          <Link to="/gallery" className="btn">{t('View full gallery')}</Link>
+          <Link to="/gallery" className="btn">{t(site.home.galleryLink)} <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
     </>

@@ -1,5 +1,5 @@
 import { languages, usePreferences } from '../context/Preferences.jsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { site } from '../content/site.js'
 import Logo from './Logo.jsx'
@@ -11,11 +11,22 @@ const languageFlags = { en: '🇬🇧', nl: '🇳🇱', de: '🇩🇪', fr: '�
 export default function Header() {
   const { t, theme, setTheme, language, setLanguage } = usePreferences()
   const [open, setOpen] = useState(false)
+  const [compactBrand, setCompactBrand] = useState(false)
+
+  useEffect(() => {
+    const updateBrand = () => {
+      // A small buffer avoids flicker when scrolling around the threshold.
+      setCompactBrand((compact) => window.scrollY > (compact ? 40 : 64))
+    }
+    updateBrand()
+    window.addEventListener('scroll', updateBrand, { passive: true })
+    return () => window.removeEventListener('scroll', updateBrand)
+  }, [])
 
   return (
     <header className="header">
       <Link to="/" className="brand" aria-label={`${site.brand} ${t('home')}`} onClick={() => setOpen(false)}>
-        <Logo />
+        <Logo compact={compactBrand} />
       </Link>
       <button
         className="menu-toggle"
