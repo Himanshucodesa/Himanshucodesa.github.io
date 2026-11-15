@@ -277,9 +277,10 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 }
 .btn span { display: inline-block; margin-left: 12px; font-size: 16px; }
 
-/* The full name yields to a viewfinder-inspired signature after scrolling. */
+/* The wordmark and viewfinder signature alternate in the same fixed space. */
 .logo__type { display: grid; align-items: center; }
-.logo__type > * { grid-area: 1 / 1; transition: opacity .25s ease, transform .3s ease; }
+.logo__type > * { grid-area: 1 / 1; }
+.logo__type .logo__word { animation: brand-word-loop 8s ease-in-out infinite; }
 .logo__acronym {
   position: relative;
   justify-self: start;
@@ -292,8 +293,8 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
   letter-spacing: -.07em;
   line-height: 1;
   opacity: 0;
-  visibility: hidden;
   transform: translateY(5px);
+  animation: brand-acronym-loop 8s ease-in-out infinite;
 }
 .logo__acronym span:nth-child(2) { color: var(--accent); font-style: italic; }
 .logo__acronym::before, .logo__acronym::after {
@@ -306,12 +307,23 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 }
 .logo__acronym::before { top: 1px; left: 0; border-width: 1px 0 0 1px; }
 .logo__acronym::after { right: 0; bottom: 0; border-width: 0 1px 1px 0; }
-.logo--compact .logo__word { opacity: 0; visibility: hidden; transform: translateY(-5px); }
-.logo--compact .logo__acronym { opacity: 1; visibility: visible; transform: translateY(0); }
+@keyframes brand-word-loop {
+  0%, 40%, 95%, 100% { opacity: 1; transform: translateY(0); }
+  45% { opacity: 0; transform: translateY(-6px); }
+  90% { opacity: 0; transform: translateY(6px); }
+}
+@keyframes brand-acronym-loop {
+  0%, 40% { opacity: 0; transform: translateY(6px); }
+  45%, 90% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+.brand:hover .logo__type > *, .brand:focus-visible .logo__type > * { animation-play-state: paused; }
 @media (max-width: 720px) { .logo__acronym { font-size: 30px; } }
 @media (prefers-reduced-motion: reduce) {
   .logo__type > *, .logo__mark { transition: none; }
-  .logo__type > * { transform: none; }
+  .logo__type > * { animation: none !important; transform: none; }
+  .logo__type .logo__word { opacity: 1; }
+  .logo__type .logo__acronym { display: none; }
 }
 
 
@@ -370,35 +382,7 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 .shutter-sequence__sound svg { width: 18px; height: 18px; }
 .shutter-sequence__sound[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
 
-/* A reusable photographic cuboid: two faces, an unlimited collection. */
-.photo-cuboid { min-height: 0; flex: 1; display: flex; flex-direction: column; gap: 14px; width: min(100%, 920px); margin-inline: auto; }
-.photo-cuboid__viewport { position: relative; flex: 1; min-height: 0; perspective: 1600px; isolation: isolate; }
-.photo-cuboid__rotor { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))); }
-.photo-cuboid__rotor.is-turning { animation: photo-quarter-turn .85s cubic-bezier(.4, 0, .2, 1) both; }
-.photo-cuboid__face { position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--line); backface-visibility: hidden; transform: translateZ(var(--cuboid-depth, 350px)); box-shadow: 0 20px 45px rgba(0,0,0,.16); }
-.photo-cuboid__face--incoming { transform: rotateY(calc(var(--turn-direction) * 90deg)) translateZ(var(--cuboid-depth, 350px)); }
-.photo-cuboid__face img { width: 100%; height: 100%; object-fit: contain; padding: clamp(6px, 1.2vw, 14px); }
-.photo-cuboid__open { position: absolute; inset: 0; width: 100%; height: 100%; cursor: zoom-in; }
-.photo-cuboid__open span { position: absolute; bottom: 12px; right: 12px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--header-bg); color: var(--text); }
-.photo-cuboid__open:disabled { cursor: default; }
-.photo-cuboid__caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
-.photo-cuboid__caption .eyebrow { font-size: 9px; margin: 0 0 3px; letter-spacing: .14em; }
-.photo-cuboid__caption h3 { font-family: var(--font-display); font-size: clamp(20px, 3vw, 28px); font-weight: 400; line-height: 1.1; margin: 0; }
-.photo-cuboid__actions { display: flex; gap: 6px; }
-.photo-cuboid__actions button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 50%; }
-.photo-cuboid__actions button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-.photo-cuboid__actions button:disabled { opacity: .4; cursor: default; }
-@keyframes photo-quarter-turn {
-  from { transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))) rotateY(0deg); }
-  to { transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))) rotateY(calc(var(--turn-direction) * -90deg)); }
-}
-@media (max-height: 540px) {
-  .photo-cuboid { gap: 6px; }
-  .photo-cuboid__caption .eyebrow { display: none; }
-  .photo-cuboid__caption h3 { font-size: 20px; }
-  .photo-cuboid__actions button { width: 30px; height: 30px; }
-}
-@media (prefers-reduced-motion: reduce) { .photo-cuboid__rotor.is-turning { animation: none; } }
+
 
 /* ── Smoothness & flow ─────────────────────────────────────── */
 :root { --ease-out: cubic-bezier(.22, 1, .36, 1); }
@@ -434,3 +418,34 @@ body { transition: background-color .4s ease, color .4s ease; }
   .photo-card, .photo-card img { opacity: 1; transform: none; }
   .lightbox__img { animation: none; }
 }
+
+/* Floating photographic screens orbit in an oval, with the far arc fading away. */
+.photo-orbit { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.photo-orbit__stage { flex: 1; min-height: 0; position: relative; perspective: 1200px; perspective-origin: 50% 45%; }
+.photo-orbit__card {
+  position: absolute; left: 50%; top: 54%; width: var(--orbit-photo-width, 240px); height: auto; aspect-ratio: 4 / 5;
+  padding: 0; border: 0; border-radius: 0; overflow: hidden;
+  background: transparent; box-shadow: none;
+  transform: translate(-50%, -50%); backface-visibility: hidden; will-change: transform, opacity;
+  cursor: zoom-in;
+}
+.photo-orbit__card img { width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 0; user-select: none; }
+.photo-orbit__caption { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.photo-orbit__caption .eyebrow { font-size: 9px; margin: 0 0 3px; letter-spacing: .14em; }
+.photo-orbit__caption h3 { font-family: var(--font-display); font-size: clamp(20px, 3vw, 28px); font-weight: 400; line-height: 1.1; margin: 0; }
+.photo-orbit__actions { display: flex; align-items: center; gap: 8px; }
+.photo-orbit__actions button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 50%; }
+.photo-orbit__actions button:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+.photo-orbit__actions button:disabled { opacity: .4; cursor: default; }
+.photo-orbit__hint { color: var(--muted); font-size: 10px; letter-spacing: .08em; margin-right: 8px; }
+@media (max-width: 720px) {
+  .photo-orbit__hint { display: none; }
+  .photo-orbit__stage { perspective: 850px; }
+}
+@media (max-height: 540px) {
+  .photo-orbit { gap: 6px; }
+  .photo-orbit__caption .eyebrow { display: none; }
+  .photo-orbit__caption h3 { font-size: 20px; }
+  .photo-orbit__actions button { width: 30px; height: 30px; }
+}
+@media (hover: none), (prefers-reduced-motion: reduce) { .photo-orbit__hint { display: none; } }

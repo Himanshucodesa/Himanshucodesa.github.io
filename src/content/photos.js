@@ -4,7 +4,8 @@
 //   2. Add an entry below with  src: 'photos/sunset.jpg'
 //   3. Every entry appears in the rotating photo display on the second slide.
 //      Set featured: true to use it as a chapter cover, where possible.
-// width/height are the image's aspect ratio (used to avoid layout jumps).
+// width/height are the original image dimensions (used to avoid layout jumps).
+// The orbit uses a 4:5 crop; optional objectPosition: '50% 35%' adjusts its focus.
 // The placeholder-*.svg entries are stand-ins — delete them (and the files) when ready.
 // ─────────────────────────────────────────────────────────────
 

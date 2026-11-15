@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 export const languages = { en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français' }
 const translations = {
   nl: {
+    'Hover to pause': 'Beweeg de muis over een foto om te pauzeren',
     "Photo carousel": "Fotocarrousel",
     "View photograph": "Foto bekijken",
     "Play slideshow": "Diavoorstelling afspelen",
@@ -37,6 +38,7 @@ const translations = {
     'Behind the lens': 'Achter de lens', 'Morning ridge': 'Bergrug in de ochtend', Crossing: 'Oversteek', 'Quiet hour': 'Stil uur', Harbour: 'Haven', 'Salt flats': 'Zoutvlaktes', 'Night market': 'Nachtmarkt', 'Window light': 'Raamlicht', 'Old town': 'Oude stad', 'Fog line': 'Mistlijn', Rain: 'Regen', Profile: 'Profiel', 'Coastal road': 'Kustweg',
   },
   de: {
+    'Hover to pause': 'Zum Pausieren mit der Maus über ein Foto fahren',
     "Photo carousel": "Fotokarussell",
     "View photograph": "Foto ansehen",
     "Play slideshow": "Diashow starten",
@@ -71,6 +73,7 @@ const translations = {
     'Behind the lens': 'Hinter der Linse', 'Morning ridge': 'Bergkamm am Morgen', Crossing: 'Überquerung', 'Quiet hour': 'Stille Stunde', Harbour: 'Hafen', 'Salt flats': 'Salzebenen', 'Night market': 'Nachtmarkt', 'Window light': 'Fensterlicht', 'Old town': 'Altstadt', 'Fog line': 'Nebelgrenze', Rain: 'Regen', Profile: 'Profil', 'Coastal road': 'Küstenstraße',
   },
   fr: {
+    'Hover to pause': 'Survolez une photo pour mettre en pause',
     "Photo carousel": "Carrousel de photos",
     "View photograph": "Voir la photographie",
     "Play slideshow": "Lancer le diaporama",

@@ -9,10 +9,9 @@ import MoonIcon from '@icons/MoonIcon.jsx'
 
 const languageFlags = { en: '🇬🇧', nl: '🇳🇱', de: '🇩🇪', fr: '🇫🇷' }
 
-export default function Header({ storyHasAdvanced = false }) {
+export default function Header() {
   const { t, theme, setTheme, language, setLanguage } = usePreferences()
   const [open, setOpen] = useState(false)
-  const [compactBrand, setCompactBrand] = useState(false)
   const [hidden, setHidden] = useState(false)
 
   useScrollLock(open)
@@ -23,8 +22,6 @@ export default function Header({ storyHasAdvanced = false }) {
     const update = () => {
       frame = 0
       const y = Math.max(0, window.scrollY)
-      // A small buffer avoids flicker when scrolling around the threshold.
-      setCompactBrand((compact) => y > (compact ? 40 : 64))
       // Tuck the header away while reading down; bring it back on any scroll up.
       const delta = y - lastY
       if (Math.abs(delta) > 6) {
@@ -44,7 +41,7 @@ export default function Header({ storyHasAdvanced = false }) {
   return (
     <header className={`header ${hidden && !open ? 'header--hidden' : ''}`} onFocusCapture={() => setHidden(false)}>
       <Link to="/" className="brand" aria-label={`${site.brand} ${t('home')}`} onClick={() => setOpen(false)}>
-        <Logo compact={compactBrand || storyHasAdvanced} />
+        <Logo />
       </Link>
       <button
         className="menu-toggle"

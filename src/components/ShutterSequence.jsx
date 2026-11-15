@@ -7,7 +7,7 @@ import { photoChapters, heroPhoto, photos } from '../content/photos.js'
 import Aperture from './Aperture.jsx'
 import Hero from './Hero.jsx'
 import PhotoGrid from './PhotoGrid.jsx'
-import PhotoCuboid from './PhotoCuboid.jsx'
+import PhotoOrbit from './PhotoOrbit.jsx'
 import { shutterFrame } from '../utils/shutterTimeline.js'
 import { useShutterSound } from '../hooks/useShutterSound.js'
 import { resolveSrc } from '../content/resolveSrc.js'
@@ -38,7 +38,7 @@ function preloadScene(scene) {
   }
 }
 
-export default function ShutterSequence({ onStepChange }) {
+export default function ShutterSequence() {
   const { t } = usePreferences()
   const { enabled: soundEnabled, supported: soundSupported, prime, play, toggle: toggleSound } = useShutterSound()
   const [position, setPosition] = useState(0)
@@ -167,7 +167,6 @@ export default function ShutterSequence({ onStepChange }) {
     preloadScene(scenes[index - 1])
   }, [index])
 
-  useEffect(() => { onStepChange?.(position > 0.02 ? index + 1 : 0) }, [index, position, onStepChange])
 
   useEffect(() => {
     const stage = stageRef.current
@@ -231,7 +230,7 @@ export default function ShutterSequence({ onStepChange }) {
               <span className="eyebrow">{index === 1 ? t('Selected work') : `${chapterNumber} / ${String(photoChapters.length).padStart(2, '0')} · ${t(scene.chapter.category)}`}</span>
               <h2>{t(scene.chapter.heading)}</h2>
             </div>
-            {index === 1 ? <PhotoCuboid photos={photos} active={!busy} onLightboxChange={setLightboxOpen} /> :
+            {index === 1 ? <PhotoOrbit photos={photos} active={!busy} onLightboxChange={setLightboxOpen} /> :
               <PhotoGrid key={scene.chapter.category} photos={scene.chapter.photos} onLightboxChange={setLightboxOpen} />}
           </div>
         )}

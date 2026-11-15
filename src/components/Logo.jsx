@@ -3,9 +3,9 @@ import { site } from '../content/site.js'
 
 // Mark + wordmark. The wordmark is real text (brand from site.js),
 // so it uses the site font and is readable by screen readers.
-export default function Logo({ className = '', compact = false }) {
+export default function Logo({ className = '' }) {
   return (
-    <span className={`logo ${compact ? 'logo--compact' : ''} ${className}`} role="img" aria-label={site.brand}>
+    <span className={`logo ${className}`} role="img" aria-label={site.brand}>
       <LogoMark className="logo__mark" />
       <span className="logo__type" aria-hidden="true">
         <span className="logo__word">
