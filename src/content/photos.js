@@ -12,6 +12,7 @@ const placeholder = (name) => `photos/placeholder-${name}.svg`
 export const categories = ['Landscape', 'Street', 'Portrait', 'Travel']
 
 export const photos = [
+  { id: 'with-camera', title: 'Behind the lens', category: 'Portrait', src: 'photos/portrait-with-camera.jpg', width: 1333, height: 2000, featured: true },
   { id: 'p1', title: 'Morning ridge', category: 'Landscape', src: placeholder('ridge'), width: 1600, height: 1067, featured: true },
   { id: 'p2', title: 'Crossing', category: 'Street', src: placeholder('crossing'), width: 1067, height: 1600, featured: true },
   { id: 'p3', title: 'Quiet hour', category: 'Portrait', src: placeholder('quiet'), width: 1200, height: 1500, featured: true },

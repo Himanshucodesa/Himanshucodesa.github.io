@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { site } from '../content/site.js'
+import Logo from './Logo.jsx'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
 
   return (
     <header className="header">
-      <Link to="/" className="brand" onClick={() => setOpen(false)}>
-        {site.brand}
+      <Link to="/" className="brand" aria-label={`${site.brand} home`} onClick={() => setOpen(false)}>
+        <Logo />
       </Link>
       <button
         className="menu-toggle"

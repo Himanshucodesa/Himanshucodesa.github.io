@@ -46,7 +46,12 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
   padding: 24px var(--gutter);
   background: linear-gradient(to bottom, rgba(14,14,14,.85), rgba(14,14,14,0));
 }
-.brand { font-family: var(--font-display); font-size: 26px; letter-spacing: .3em; }
+.brand { position: relative; z-index: 2; }
+.logo { display: inline-flex; align-items: center; gap: 12px; }
+.logo__mark { width: 34px; height: 34px; color: var(--text); transition: transform .6s ease; }
+.brand:hover .logo__mark { transform: rotate(60deg); }
+.logo__word { font-family: var(--font-display); font-size: 24px; letter-spacing: .3em; line-height: 1; }
+@media (max-width: 720px) { .logo__mark { width: 28px; height: 28px; } .logo__word { font-size: 20px; } }
 .nav { display: flex; gap: 32px; }
 .nav__link {
   font-size: 13px; letter-spacing: .15em; text-transform: uppercase;

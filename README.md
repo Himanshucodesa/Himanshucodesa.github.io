@@ -1,6 +1,6 @@
 # Frame — Photography Portfolio
 
-React + Vite, deployed to GitHub Pages at https://www.framethepotraits.com/
+React + Vite, deployed to GitHub Pages at https://www.frametheportraits.com/
 
 ## Run locally
 
