@@ -1,4 +1,4 @@
-import { useImperativeHandle, useRef } from 'react'
+import { useId, useImperativeHandle, useRef } from 'react'
 
 // A camera-iris overlay drawn as N overlapping blades.
 // Control it imperatively for smooth 60fps updates without React re-renders:
@@ -17,6 +17,7 @@ function bladePath(r, t) {
 }
 
 export default function Aperture({ ref, blades = 8 }) {
+  const shadeId = `blade-shade-${useId()}`
   const svgRef = useRef(null)
   const groupRefs = useRef([])
   const pathRefs = useRef([])
@@ -50,7 +51,7 @@ export default function Aperture({ ref, blades = 8 }) {
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id="blade-shade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1200">
+        <linearGradient id={shadeId} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1200">
           <stop offset="0" stopColor="var(--blade-light)" />
           <stop offset="0.5" stopColor="var(--blade)" />
         </linearGradient>
@@ -60,6 +61,7 @@ export default function Aperture({ ref, blades = 8 }) {
           <path
             ref={(el) => (pathRefs.current[i] = el)}
             className="aperture__blade"
+            style={{ fill: `url(#${shadeId})` }}
             d={bladePath(0, t)}
           />
         </g>

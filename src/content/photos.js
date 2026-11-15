@@ -29,3 +29,15 @@ export const photos = [
 
 // The large image on the home page hero
 export const heroPhoto = { src: placeholder('hero'), alt: 'Featured photograph' }
+
+// Each chapter pairs one shutter with one grid. Every photo belongs to one grid.
+// Add or reorder chapters here to extend the homepage sequence.
+export const photoChapters = [
+  { category: 'Portrait', heading: 'Some moments stay.' },
+  { category: 'Street', heading: 'Life between the lines.' },
+  { category: 'Landscape', heading: 'Room to breathe.' },
+  { category: 'Travel', heading: 'A little further from familiar.' },
+].map((chapter) => {
+  const collection = photos.filter((photo) => photo.category === chapter.category)
+  return { ...chapter, photos: collection, cover: collection.find((photo) => photo.featured) ?? collection[0] }
+}).filter((chapter) => chapter.photos.length > 0)

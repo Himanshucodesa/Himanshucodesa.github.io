@@ -1,14 +1,15 @@
 import { usePreferences } from '../context/Preferences.jsx'
 import { resolveSrc } from '../content/resolveSrc.js'
 
-export default function Hero({ image, title, subtitle }) {
+export default function Hero({ image, title, subtitle, headingLevel = 'h1', lazy = false }) {
   const { t } = usePreferences()
+  const Heading = headingLevel
   return (
     <section className="hero">
-      <img className="hero__img" src={resolveSrc(image.src)} alt={t(image.alt)} />
+      <img className="hero__img" src={resolveSrc(image.src)} alt={t(image.alt ?? image.title)} loading={lazy ? 'lazy' : 'eager'} />
       <div className="hero__overlay" />
       <div className="hero__text">
-        <h1>{title}</h1>
+        <Heading>{title}</Heading>
         {subtitle && <p>{subtitle}</p>}
       </div>
     </section>

@@ -8,7 +8,7 @@ import MoonIcon from '@icons/MoonIcon.jsx'
 
 const languageFlags = { en: '🇬🇧', nl: '🇳🇱', de: '🇩🇪', fr: '🇫🇷' }
 
-export default function Header() {
+export default function Header({ storyHasAdvanced = false }) {
   const { t, theme, setTheme, language, setLanguage } = usePreferences()
   const [open, setOpen] = useState(false)
   const [compactBrand, setCompactBrand] = useState(false)
@@ -26,7 +26,7 @@ export default function Header() {
   return (
     <header className="header">
       <Link to="/" className="brand" aria-label={`${site.brand} ${t('home')}`} onClick={() => setOpen(false)}>
-        <Logo compact={compactBrand} />
+        <Logo compact={compactBrand || storyHasAdvanced} />
       </Link>
       <button
         className="menu-toggle"

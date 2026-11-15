@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PhotoCard from './PhotoCard.jsx'
 import Lightbox from './Lightbox.jsx'
 
 // Masonry grid + built-in lightbox. Pass any array of photos.
-export default function PhotoGrid({ photos }) {
+export default function PhotoGrid({ photos, onLightboxChange }) {
   const [index, setIndex] = useState(null)
+  const isOpen = index !== null
+  useEffect(() => {
+    onLightboxChange?.(isOpen)
+    return () => onLightboxChange?.(false)
+  }, [isOpen, onLightboxChange])
 
   return (
     <>

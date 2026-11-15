@@ -3,6 +3,10 @@ import { createContext, useContext, useEffect, useState } from 'react'
 export const languages = { en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français' }
 const translations = {
   nl: {
+    'Shutter control': 'Sluiterbediening',
+    "Life between the lines.": "Het leven tussen de lijnen.",
+    "Room to breathe.": "Ruimte om te ademen.",
+    "A little further from familiar.": "Een stukje verder van het vertrouwde.",
     "For the moments that don’t ask for attention.": "Voor de momenten die niet om aandacht vragen.",
     "A passing glance. A street before it wakes. Light finding its way into an ordinary afternoon. Small things, given a little room.": "Een vluchtige blik. Een straat die nog moet ontwaken. Licht dat een gewone middag binnenvalt. Kleine dingen, met wat ruimte om te spreken.",
     "No fixed route. Start with a face, wander into a landscape, stay wherever the light takes you.": "Geen vaste route. Begin bij een gezicht, dwaal een landschap in en blijf waar het licht je brengt.",
@@ -26,6 +30,10 @@ const translations = {
     'Behind the lens': 'Achter de lens', 'Morning ridge': 'Bergrug in de ochtend', Crossing: 'Oversteek', 'Quiet hour': 'Stil uur', Harbour: 'Haven', 'Salt flats': 'Zoutvlaktes', 'Night market': 'Nachtmarkt', 'Window light': 'Raamlicht', 'Old town': 'Oude stad', 'Fog line': 'Mistlijn', Rain: 'Regen', Profile: 'Profiel', 'Coastal road': 'Kustweg',
   },
   de: {
+    'Shutter control': 'Verschlusssteuerung',
+    "Life between the lines.": "Das Leben zwischen den Zeilen.",
+    "Room to breathe.": "Raum zum Durchatmen.",
+    "A little further from familiar.": "Ein Stück weiter weg vom Vertrauten.",
     "For the moments that don’t ask for attention.": "Für die Momente, die nicht um Aufmerksamkeit bitten.",
     "A passing glance. A street before it wakes. Light finding its way into an ordinary afternoon. Small things, given a little room.": "Ein flüchtiger Blick. Eine Straße, bevor sie erwacht. Licht, das in einen gewöhnlichen Nachmittag fällt. Kleine Dinge, denen wir Raum geben.",
     "No fixed route. Start with a face, wander into a landscape, stay wherever the light takes you.": "Keine feste Route. Beginne mit einem Gesicht, streife durch eine Landschaft und bleib, wohin das Licht dich führt.",
@@ -49,6 +57,10 @@ const translations = {
     'Behind the lens': 'Hinter der Linse', 'Morning ridge': 'Bergkamm am Morgen', Crossing: 'Überquerung', 'Quiet hour': 'Stille Stunde', Harbour: 'Hafen', 'Salt flats': 'Salzebenen', 'Night market': 'Nachtmarkt', 'Window light': 'Fensterlicht', 'Old town': 'Altstadt', 'Fog line': 'Nebelgrenze', Rain: 'Regen', Profile: 'Profil', 'Coastal road': 'Küstenstraße',
   },
   fr: {
+    'Shutter control': 'Commande de l’obturateur',
+    "Life between the lines.": "La vie entre les lignes.",
+    "Room to breathe.": "De l’espace pour respirer.",
+    "A little further from familiar.": "Un peu plus loin du familier.",
     "For the moments that don’t ask for attention.": "Pour les instants qui ne réclament pas d’attention.",
     "A passing glance. A street before it wakes. Light finding its way into an ordinary afternoon. Small things, given a little room.": "Un regard furtif. Une rue avant son réveil. La lumière qui se glisse dans un après-midi ordinaire. De petites choses auxquelles on laisse un peu de place.",
     "No fixed route. Start with a face, wander into a landscape, stay wherever the light takes you.": "Pas d’itinéraire imposé. Commencez par un visage, perdez-vous dans un paysage, attardez-vous là où la lumière vous mène.",

@@ -12,7 +12,7 @@ const F_STOPS = ['1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22']
 const INTRO_MS = 1400
 const ease = (t) => 1 - Math.pow(1 - t, 3)
 
-export default function ShutterHero(props) {
+export default function ShutterHero({ openOnView = false, ...props }) {
   const { t } = usePreferences()
   const sectionRef = useRef(null)
   const stageRef = useRef(null)
@@ -45,7 +45,7 @@ export default function ShutterHero(props) {
 
   useScrollProgress(sectionRef, onScroll)
 
-  // Intro: iris opens on first load (skipped for reduced motion).
+  // Later chapters open on arrival, rather than animating off-screen on load.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       state.current.intro = 1
@@ -53,15 +53,32 @@ export default function ShutterHero(props) {
       return
     }
     let raf
-    const start = performance.now()
-    const tick = (now) => {
-      state.current.intro = ease(Math.min(1, (now - start) / INTRO_MS))
-      render()
-      if (state.current.intro < 1) raf = requestAnimationFrame(tick)
+    let observer
+    const startIntro = () => {
+      const start = performance.now()
+      const tick = (now) => {
+        state.current.intro = ease(Math.min(1, (now - start) / INTRO_MS))
+        render()
+        if (state.current.intro < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [render])
+    if (openOnView && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          observer.disconnect()
+          startIntro()
+        }
+      }, { threshold: 0.55 })
+      observer.observe(stageRef.current)
+    } else {
+      startIntro()
+    }
+    return () => {
+      cancelAnimationFrame(raf)
+      observer?.disconnect()
+    }
+  }, [render, openOnView])
 
   return (
     <section className="shutter" ref={sectionRef}>

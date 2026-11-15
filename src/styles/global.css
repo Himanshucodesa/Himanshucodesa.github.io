@@ -82,7 +82,7 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 .hero__img { width: 100%; height: 100%; object-fit: cover; animation: slowzoom 20s ease-out forwards; }
 .hero__overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.1) 60%); }
 .hero__text { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 12vh; }
-.hero__text h1 { font-size: clamp(48px, 9vw, 120px); }
+.hero__text h1, .hero__text h2 { font-size: clamp(48px, 9vw, 120px); }
 .hero__text p { font-size: clamp(16px, 2vw, 20px); color: #d8d4ce; margin: 12px 0 0; max-width: 520px; }
 @keyframes slowzoom { from { transform: scale(1.08); } to { transform: scale(1); } }
 
@@ -176,7 +176,7 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 .shutter__scene { height: 100%; transform: scale(var(--zoom, 1)); transform-origin: center; will-change: transform; }
 .shutter__scene .hero__text { opacity: var(--text-fade, 1); }
 .aperture { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.aperture__blade { fill: url(#blade-shade); stroke: var(--blade-edge); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.aperture__blade { stroke: var(--blade-edge); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .shutter__readout {
   position: absolute; right: var(--gutter); bottom: 32px; z-index: 2;
   font-family: var(--font-display); font-size: 22px; color: var(--accent); letter-spacing: .05em;
@@ -303,3 +303,54 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
   .logo__type > *, .logo__mark { transition: none; }
   .logo__type > * { transform: none; }
 }
+
+
+/* Repeating shutter / collection chapters. */
+.photo-chapter { padding-top: clamp(48px, 7vw, 96px); padding-bottom: clamp(56px, 8vw, 112px); }
+.photo-chapter__heading { position: relative; padding-top: 30px; }
+.photo-chapter__number { position: absolute; top: 0; left: 0; font-size: 10px; letter-spacing: .18em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sequence-end { padding-top: 8px; padding-bottom: 80px; text-align: center; }
+
+/* Homepage scenes share one viewport; the shutter changes the scene in place. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.layout--story { height: 100svh; min-height: 0; overflow: hidden; }
+.layout--story .main { display: flex; min-height: 0; }
+.layout--story .footer { flex-shrink: 0; padding-top: 12px; padding-bottom: 12px; font-size: 11px; }
+.shutter-sequence { position: relative; width: 100%; height: 100%; min-height: 0; overflow: hidden; touch-action: pinch-zoom; }
+.shutter-sequence__scene { height: 100%; }
+.shutter-sequence .hero { height: 100%; min-height: 0; }
+.shutter-sequence .hero__text { bottom: clamp(96px, 14vh, 150px); }
+.shutter-sequence .hero__img { animation: none; }
+.shutter-sequence__collection { height: 100%; padding: 110px var(--gutter) 90px; display: flex; flex-direction: column; gap: 24px; }
+.shutter-sequence__heading { flex-shrink: 0; }
+.shutter-sequence__heading .eyebrow { margin-bottom: 8px; }
+.shutter-sequence__heading h2 { font-size: clamp(28px, 4vw, 52px); }
+.shutter-sequence .photo-grid { columns: auto; display: grid; grid-template-columns: repeat(var(--photo-count), minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); gap: 16px; flex: 1; min-height: 0; }
+.shutter-sequence .photo-card { margin: 0; height: 100%; min-height: 0; }
+.shutter-sequence .photo-card img { width: 100%; height: 100%; object-fit: cover; }
+.shutter-sequence__controls { position: absolute; bottom: 14px; left: var(--gutter); right: var(--gutter); z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px; border: 1px solid var(--line); background: var(--header-bg); border-radius: 999px; }
+.shutter-sequence__controls button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; font-size: 20px; }
+.shutter-sequence__controls button:hover:not(:disabled) { color: var(--bg); background: var(--text); }
+.shutter-sequence__controls button:disabled { opacity: .35; cursor: default; }
+.shutter-sequence__status { font-size: 11px; letter-spacing: .08em; text-align: center; color: var(--text); }
+.shutter-sequence__all { padding: 8px 12px; font-size: 12px; }
+@media (max-width: 720px) {
+  .shutter-sequence__collection { padding-top: 96px; gap: 16px; }
+  .shutter-sequence .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .shutter-sequence .photo-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .shutter-sequence__status { font-size: 10px; letter-spacing: .02em; }
+}
+@media (max-height: 540px) {
+  .layout--story .footer { padding-top: 6px; padding-bottom: 6px; }
+  .shutter-sequence__collection { padding-top: 90px; padding-bottom: 72px; gap: 8px; }
+  .shutter-sequence__heading .eyebrow { display: none; }
+  .shutter-sequence__heading h2 { font-size: 24px; }
+  .shutter-sequence .hero__text { bottom: 82px; }
+  .shutter-sequence .hero__wordmark { font-size: 54px; }
+}
+
+/* The timeline is a direct shutter control, not an autoplay indicator. */
+.shutter-sequence__controls { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; row-gap: 0; border-radius: 18px; padding: 6px 8px; }
+.shutter-sequence__scrubber { grid-column: 1 / -1; grid-row: 2; width: 100%; height: 18px; margin: 4px 0 0; accent-color: var(--accent); cursor: ew-resize; touch-action: auto; }
+.shutter-sequence__collection { padding-bottom: 110px; }
+@media (max-height: 540px) { .shutter-sequence__collection { padding-bottom: 104px; } }
