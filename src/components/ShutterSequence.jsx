@@ -3,10 +3,11 @@ import { flushSync } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { usePreferences } from '../context/Preferences.jsx'
 import { site } from '../content/site.js'
-import { photoChapters, heroPhoto } from '../content/photos.js'
+import { photoChapters, heroPhoto, photos } from '../content/photos.js'
 import Aperture from './Aperture.jsx'
 import Hero from './Hero.jsx'
 import PhotoGrid from './PhotoGrid.jsx'
+import PhotoCuboid from './PhotoCuboid.jsx'
 import { shutterFrame } from '../utils/shutterTimeline.js'
 import { useShutterSound } from '../hooks/useShutterSound.js'
 import SoundIcon from '@icons/SoundIcon.jsx'
@@ -125,10 +126,11 @@ export default function ShutterSequence({ onStepChange }) {
         ) : (
           <div className="shutter-sequence__collection" style={{ '--photo-count': scene.chapter.photos.length }}>
             <div className="shutter-sequence__heading">
-              <span className="eyebrow">{chapterNumber} / {String(photoChapters.length).padStart(2, '0')} · {t(scene.chapter.category)}</span>
+              <span className="eyebrow">{index === 1 ? t('Selected work') : `${chapterNumber} / ${String(photoChapters.length).padStart(2, '0')} · ${t(scene.chapter.category)}`}</span>
               <h2>{t(scene.chapter.heading)}</h2>
             </div>
-            <PhotoGrid key={scene.chapter.category} photos={scene.chapter.photos} onLightboxChange={setLightboxOpen} />
+            {index === 1 ? <PhotoCuboid photos={photos} active={!busy} onLightboxChange={setLightboxOpen} /> :
+              <PhotoGrid key={scene.chapter.category} photos={scene.chapter.photos} onLightboxChange={setLightboxOpen} />}
           </div>
         )}
       </div>

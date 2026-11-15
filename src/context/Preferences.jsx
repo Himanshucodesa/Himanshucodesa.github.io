@@ -3,6 +3,10 @@ import { createContext, useContext, useEffect, useState } from 'react'
 export const languages = { en: 'English', nl: 'Nederlands', de: 'Deutsch', fr: 'Français' }
 const translations = {
   nl: {
+    "Photo carousel": "Fotocarrousel",
+    "View photograph": "Foto bekijken",
+    "Play slideshow": "Diavoorstelling afspelen",
+    "Pause slideshow": "Diavoorstelling pauzeren",
     "Shutter sound": "Sluitergeluid",
     "Enable shutter sound": "Sluitergeluid inschakelen",
     "Mute shutter sound": "Sluitergeluid dempen",
@@ -33,6 +37,10 @@ const translations = {
     'Behind the lens': 'Achter de lens', 'Morning ridge': 'Bergrug in de ochtend', Crossing: 'Oversteek', 'Quiet hour': 'Stil uur', Harbour: 'Haven', 'Salt flats': 'Zoutvlaktes', 'Night market': 'Nachtmarkt', 'Window light': 'Raamlicht', 'Old town': 'Oude stad', 'Fog line': 'Mistlijn', Rain: 'Regen', Profile: 'Profiel', 'Coastal road': 'Kustweg',
   },
   de: {
+    "Photo carousel": "Fotokarussell",
+    "View photograph": "Foto ansehen",
+    "Play slideshow": "Diashow starten",
+    "Pause slideshow": "Diashow pausieren",
     "Shutter sound": "Verschlussgeräusch",
     "Enable shutter sound": "Verschlussgeräusch einschalten",
     "Mute shutter sound": "Verschlussgeräusch stummschalten",
@@ -63,6 +71,10 @@ const translations = {
     'Behind the lens': 'Hinter der Linse', 'Morning ridge': 'Bergkamm am Morgen', Crossing: 'Überquerung', 'Quiet hour': 'Stille Stunde', Harbour: 'Hafen', 'Salt flats': 'Salzebenen', 'Night market': 'Nachtmarkt', 'Window light': 'Fensterlicht', 'Old town': 'Altstadt', 'Fog line': 'Nebelgrenze', Rain: 'Regen', Profile: 'Profil', 'Coastal road': 'Küstenstraße',
   },
   fr: {
+    "Photo carousel": "Carrousel de photos",
+    "View photograph": "Voir la photographie",
+    "Play slideshow": "Lancer le diaporama",
+    "Pause slideshow": "Mettre le diaporama en pause",
     "Shutter sound": "Son de l’obturateur",
     "Enable shutter sound": "Activer le son de l’obturateur",
     "Mute shutter sound": "Couper le son de l’obturateur",

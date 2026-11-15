@@ -54,10 +54,20 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 @media (max-width: 720px) { .logo__mark { width: 28px; height: 28px; } .logo__word { font-size: 20px; } }
 .nav { display: flex; gap: 32px; }
 .nav__link {
+  position: relative; display: inline-block; padding-block: 6px;
   font-size: 13px; letter-spacing: .15em; text-transform: uppercase;
   color: var(--muted); transition: color .2s;
 }
+.nav__link::after {
+  content: ''; position: absolute; left: 0; right: .15em; bottom: 0;
+  height: 2px; border-radius: 2px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+}
+.nav__link:hover::after, .nav__link:focus-visible::after, .nav__link.is-active::after { transform: scaleX(1); }
 .nav__link:hover, .nav__link.is-active { color: var(--text); }
+@media (prefers-reduced-motion: reduce) {
+  .nav__link, .nav__link::after { transition: none; }
+}
 .menu-toggle { display: none; width: 28px; height: 20px; position: relative; }
 .menu-toggle span {
   position: absolute; left: 0; right: 0; height: 1px; background: var(--text); transition: .3s;
@@ -359,3 +369,33 @@ h1, h2 { font-family: var(--font-display); font-weight: 500; line-height: 1.1; m
 .shutter-sequence__sound { display: grid; place-items: center; color: var(--muted); }
 .shutter-sequence__sound svg { width: 18px; height: 18px; }
 .shutter-sequence__sound[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
+
+/* A reusable photographic cuboid: two faces, an unlimited collection. */
+.photo-cuboid { min-height: 0; flex: 1; display: flex; flex-direction: column; gap: 14px; width: min(100%, 920px); margin-inline: auto; }
+.photo-cuboid__viewport { position: relative; flex: 1; min-height: 0; perspective: 1600px; isolation: isolate; }
+.photo-cuboid__rotor { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))); }
+.photo-cuboid__rotor.is-turning { animation: photo-quarter-turn .85s cubic-bezier(.4, 0, .2, 1) both; }
+.photo-cuboid__face { position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--line); backface-visibility: hidden; transform: translateZ(var(--cuboid-depth, 350px)); box-shadow: 0 20px 45px rgba(0,0,0,.16); }
+.photo-cuboid__face--incoming { transform: rotateY(calc(var(--turn-direction) * 90deg)) translateZ(var(--cuboid-depth, 350px)); }
+.photo-cuboid__face img { width: 100%; height: 100%; object-fit: contain; padding: clamp(6px, 1.2vw, 14px); }
+.photo-cuboid__open { position: absolute; inset: 0; width: 100%; height: 100%; cursor: zoom-in; }
+.photo-cuboid__open span { position: absolute; bottom: 12px; right: 12px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--header-bg); color: var(--text); }
+.photo-cuboid__open:disabled { cursor: default; }
+.photo-cuboid__caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.photo-cuboid__caption .eyebrow { font-size: 9px; margin: 0 0 3px; letter-spacing: .14em; }
+.photo-cuboid__caption h3 { font-family: var(--font-display); font-size: clamp(20px, 3vw, 28px); font-weight: 400; line-height: 1.1; margin: 0; }
+.photo-cuboid__actions { display: flex; gap: 6px; }
+.photo-cuboid__actions button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 1px solid var(--line); border-radius: 50%; }
+.photo-cuboid__actions button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.photo-cuboid__actions button:disabled { opacity: .4; cursor: default; }
+@keyframes photo-quarter-turn {
+  from { transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))) rotateY(0deg); }
+  to { transform: translateZ(calc(-1 * var(--cuboid-depth, 350px))) rotateY(calc(var(--turn-direction) * -90deg)); }
+}
+@media (max-height: 540px) {
+  .photo-cuboid { gap: 6px; }
+  .photo-cuboid__caption .eyebrow { display: none; }
+  .photo-cuboid__caption h3 { font-size: 20px; }
+  .photo-cuboid__actions button { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .photo-cuboid__rotor.is-turning { animation: none; } }

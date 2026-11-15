@@ -2,7 +2,8 @@
 // Your photos. To add your own:
 //   1. Drop the image into  public/photos/  (e.g. public/photos/sunset.jpg)
 //   2. Add an entry below with  src: 'photos/sunset.jpg'
-//   3. Set featured: true to show it on the home page.
+//   3. Every entry appears in the rotating photo display on the second slide.
+//      Set featured: true to use it as a chapter cover, where possible.
 // width/height are the image's aspect ratio (used to avoid layout jumps).
 // The placeholder-*.svg entries are stand-ins — delete them (and the files) when ready.
 // ─────────────────────────────────────────────────────────────
