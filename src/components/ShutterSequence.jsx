@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { usePreferences } from '../context/Preferences.jsx'
 import { site } from '../content/site.js'
-import { photoChapters, heroPhoto, photos } from '../content/photos.js'
+import { photoChapters, heroPhoto, featuredPhotos } from '../content/photos.js'
 import Aperture from './Aperture.jsx'
 import Hero from './Hero.jsx'
 import PhotoGrid from './PhotoGrid.jsx'
@@ -58,6 +58,8 @@ export default function ShutterSequence() {
   const { index } = current
   const busy = current.open < 0.98
   const scene = scenes[index]
+  const collectionPhotos = index === 1 ? featuredPhotos : scene.chapter.photos
+  const useOrbit = index === 1 || scene.chapter.presentation === 'orbit'
   lightboxRef.current = lightboxOpen
 
   // Renders one shutter position. Input never calls this directly; it sets a
@@ -228,10 +230,12 @@ export default function ShutterSequence() {
           <div className="shutter-sequence__collection" style={{ '--photo-count': scene.chapter.photos.length }}>
             <div className="shutter-sequence__heading">
               <span className="eyebrow">{index === 1 ? t('Selected work') : `${chapterNumber} / ${String(photoChapters.length).padStart(2, '0')} · ${t(scene.chapter.category)}`}</span>
-              <h2>{t(scene.chapter.heading)}</h2>
+              <h2>{t(index === 1 ? site.home.heading : scene.chapter.heading)}</h2>
+              <p className="muted">{t(index === 1 ? site.home.introduction : scene.chapter.introduction)}</p>
             </div>
-            {index === 1 ? <PhotoOrbit photos={photos} active={!busy} onLightboxChange={setLightboxOpen} /> :
-              <PhotoGrid key={scene.chapter.category} photos={scene.chapter.photos} onLightboxChange={setLightboxOpen} />}
+            {collectionPhotos.length === 0 ? <p className="muted">{t(site.gallery.emptyMessage)}</p> : useOrbit ?
+              <PhotoOrbit key={scene.chapter.category} photos={collectionPhotos} active={!busy} onLightboxChange={setLightboxOpen} /> :
+              <PhotoGrid key={scene.chapter.category} photos={collectionPhotos} onLightboxChange={setLightboxOpen} />}
           </div>
         )}
       </div>
@@ -247,11 +251,11 @@ export default function ShutterSequence() {
             if (event.key === 'End') { event.preventDefault(); glideTo(lastScene) }
           }}
           aria-label={t('Shutter control')}
-          aria-valuetext={`${t(scene.chapter.category)} · ${t(scene.kind === 'cover' ? 'Featured' : 'Gallery')} · ${Math.round(current.open * 100)}%`}
+          aria-valuetext={`${t(index === 1 ? 'Selected work' : scene.chapter.category)} · ${t(scene.kind === 'cover' ? 'Featured' : 'Portfolio')} · ${Math.round(current.open * 100)}%`}
         />
         <button type="button" onClick={() => stepScene(-1)} disabled={position <= 0 || lightboxOpen} aria-label={t('Previous')}>←</button>
         <span className="shutter-sequence__status" role="status" aria-live="polite" aria-atomic="true">
-          {chapterNumber} / {String(photoChapters.length).padStart(2, '0')} · {t(scene.chapter.category)} · {t(scene.kind === 'cover' ? 'Featured' : 'Gallery')}
+          {chapterNumber} / {String(photoChapters.length).padStart(2, '0')} · {t(index === 1 ? 'Selected work' : scene.chapter.category)} · {t(scene.kind === 'cover' ? 'Featured' : 'Portfolio')}
         </span>
         <button type="button" className="shutter-sequence__sound" onClick={toggleSound}
           disabled={!soundSupported} aria-pressed={soundEnabled} aria-label={t('Shutter sound')}

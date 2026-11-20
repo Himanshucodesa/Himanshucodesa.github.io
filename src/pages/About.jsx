@@ -9,7 +9,7 @@ export default function About() {
     <section className="container section page-top about">
       <img className="about__portrait" src={resolveSrc(about.portrait)} alt={t('Behind the lens')} />
       <div className="about__text">
-        <span className="eyebrow">{t('About')}</span>
+        <span className="eyebrow">{t('My story')}</span>
         <h2>{t(about.heading)}</h2>
         {about.paragraphs.map((p, i) => <p key={i}>{t(p)}</p>)}
         <p className="about__note">{t(about.note)}</p>

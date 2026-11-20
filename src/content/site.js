@@ -2,7 +2,7 @@
 // Site-wide settings. Edit this file to change text, links, and
 // navigation — no component code needs to change.
 // ─────────────────────────────────────────────────────────────
-const brandWords = ['Frame', 'the', 'Potraits']
+const brandWords = ['Frame', 'the', 'Portraits']
 const brand = brandWords.join(' ')
 
 export const site = {
@@ -10,43 +10,45 @@ export const site = {
   brand,
   brandWords,
   acronym: brandWords.map((word) => word[0]).join('').toLowerCase(),
-  url: 'https://www.framethepotraits.com/',
-  description: `${brand} — A photographic exploration of people, places, and everyday moments, told through portraits, street scenes, landscapes, and travel.`,
-  tagline: 'For the moments that don’t ask for attention.',
+  url: 'https://www.frametheportraits.com/',
+  description: `${brand} — Portrait and event photography: adult portraits, baby portraits, and dance events.`,
+  tagline: 'Portraits with feeling. Events with life.',
   // Add confirmed contact details here; empty values stay out of the UI.
   email: null,
 
   nav: [
-    { label: 'Work', to: '/' },
-    { label: 'Gallery', to: '/gallery' },
-    { label: 'About', to: '/about' },
+    { label: 'Home', to: '/' },
+    { label: 'Portfolio', to: '/gallery' },
+    { label: 'My story', to: '/about' },
     { label: 'Contact', to: '/contact' },
   ],
 
   socials: [],
 
   home: {
-    heading: 'Some moments stay.',
+    heading: 'People. Presence. A moment kept.',
     galleryLink: 'Stay a little longer',
-    introduction: 'A passing glance. A street before it wakes. Light finding its way into an ordinary afternoon. Small things, given a little room.',
+    introduction: 'A portrait that feels like you. The smallest expressions of a baby. A dancer caught between two steps. These are the stories I photograph.',
   },
 
   gallery: {
-    heading: 'Follow your eye.',
-    introduction: 'No fixed route. Start with a face, wander into a landscape, stay wherever the light takes you.',
+    emptyMessage: 'A new selection of portraits and event stories is on its way.',
+    heading: 'Faces, first moments, and the stage.',
+    introduction: 'Explore adult portraits, baby portraits, and dance events. Different stories, the same attention to the person in the frame.',
   },
 
   contact: {
-    heading: 'What do you see?',
-    introduction: 'A portrait that feels like you. A place with a story. An idea still taking shape. The next frame can start with any of them.',
+    heading: 'Your next story, in focus.',
+    introduction: 'Planning a portrait session, photographs of your baby, or a dance event? Tell me what you have in mind and the moments you want to remember.',
   },
 
   about: {
     note: 'The shutter closes. The story stays.',
-    heading: 'Look a little longer.',
+    heading: 'It started with a bird.',
     paragraphs: [
-      'There is a moment just before someone notices the camera. The shoulders soften. The performance falls away. Something honest comes into view. That is the kind of moment Frame the Potraits is drawn to.',
-      'The same curiosity follows the lens outside: into streets, across coastlines, through the familiar and the faraway. A photograph cannot keep the whole day. But it can keep the part that made you feel something.',
+      'My photography began with birds. Watching, waiting, learning to notice the smallest movement. That was where I first learned patience, and how much a change in light can change a photograph.',
+      'From birds, I moved to the streets. The subjects changed, but the curiosity stayed: a passing expression, an unexpected gesture, a story unfolding in a fraction of a second.',
+      'Today, I bring that same attention to people. I photograph adult portraits, babies, and dance events, from a quiet expression to the energy of a performance. The thread through it all is the same: notice what matters, and be ready when it happens.',
     ],
     // Path inside /public, or a full URL
     portrait: 'photos/portrait-with-camera.jpg',
